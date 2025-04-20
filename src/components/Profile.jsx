@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
+import { setFollowingUser } from '@/redux/authSlice';
 import { AtSign, Heart, MessageCircle } from 'lucide-react';
 
 const Profile = () => {
@@ -21,7 +22,7 @@ useEffect(() => {
 
   const [activeTab, setActiveTab] = useState('posts');
 
-  const { userProfile, user } = useSelector(store => store.auth);
+  const { userProfile, user,removeFollowingUser } = useSelector(store => store.auth);
 
   const isLoggedInUserProfile = user?._id === userProfile?._id;
  
@@ -43,18 +44,53 @@ useEffect(() => {
     }
   };
   
+  // const handleUnfollow = async () => {
+  //   try {
+  //     const res=await axios.post(`https://instagram-backend-my27.onrender.com/api/user/followorunfollow/${userProfile._id}`);
+  //     setIsFollowing(false);
+  //     if(res.data.success){
+  //       toast.success(res.data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error(res.data.message || "Some thing wrong !")
+  //     console.error("Error unfollowing user", error);
+  //   }
+  // };
   const handleUnfollow = async () => {
     try {
-      const res=await axios.post(`https://instagram-backend-my27.onrender.com/api/user/followorunfollow/${userProfile._id}`);
-      setIsFollowing(false);
-      if(res.data.success){
-        toast.success(res.data.message);
-      }
+        const response = await axios.post(
+            `https://instagram-backend-my27.onrender.com/api/v1/user/followorunfollow/${userProfile._id}`,
+            {},
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                withCredentials: true,
+            }
+        );
+
+    
+
+        if (response.data.message === "followed successfully") {
+            dispatch(removeFollowingUser(userProfile._id)); 
+
+            
+            setTimeout(async () => {
+                try {
+                    const res = await axios.get('https://instagram-backend-my27.onrender.com/api/v1/user/following/data', { withCredentials: true });
+                    console.log(res.data);
+                    if (res.data.success) { 
+                        dispatch(setFollowingUser(res.data.users));
+                    }
+                } catch (error) {
+                    Toaster.log(error);
+                }
+            }, 100); 
+        }
     } catch (error) {
-      toast.error(res.data.message || "Some thing wrong !")
-      console.error("Error unfollowing user", error);
+        Toaster.error(error.response?.data?.message || "Something went wrong!");
     }
-  };
+};
   const displayedPost = activeTab === 'posts'
     ? userProfile?.posts
     : activeTab === 'saved'

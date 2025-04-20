@@ -29,6 +29,9 @@ const authSlice = createSlice({
         setFollowingUser:(state,action) => {
             state.followingUser = action.payload;
         },
+        removeFollowingUser:(state,action)=>{
+            state.suggestedUsers = state.suggestedUsers.filter(user => user.id !== action.payload);
+        }, 
     }
 });
 export const {
@@ -37,6 +40,7 @@ export const {
     setUserProfile,
     setSelectedUser,
     removesuggestedUsers,
+    removeFollowingUser,
     setFollowingUser,
 } = authSlice.actions;
 export default authSlice.reducer;
