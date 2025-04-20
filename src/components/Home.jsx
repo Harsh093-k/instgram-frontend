@@ -12,7 +12,7 @@ import { setFollowingUser } from '@/redux/authSlice';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { followingUser } = useSelector((store) => store.auth);
+  const { followingUsers } = useSelector((store) => store.auth);
 
   useGetAllPost();
   useGetSuggestedUsers();
@@ -44,9 +44,12 @@ const Home = () => {
    
       <div className='flex flex-col items-center  justify-center w-full lg:flex-1 overflow-hidden'>
         <div className='w-full overflow-x-auto mx-auto sm:w-screen  overflow-hidden'>
-          <ScrollablePersonList persons={followingUser ?? []} />
+          <ScrollablePersonList persons={followingUsers ?? []} />
         </div>
-        <Feed />
+        <div className='w-full mr-20 lg:ml-20'><Feed /></div>
+
+
+       
         <Outlet />
       </div>
 

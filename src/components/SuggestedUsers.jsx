@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FaUserCircle } from "react-icons/fa";
 import axios from 'axios';
 import { removesuggestedUsers,setSuggestedUsers } from '@/redux/authSlice';
-import  Toaster  from 'react-hot-toast';
+import  Toaster, { toast }  from 'react-hot-toast';
 import useGetSuggestedUsers from '@/hooks/useGetSuggestedUsers';
 
 const SuggestedUsers = () => {
@@ -28,6 +28,7 @@ const SuggestedUsers = () => {
 
             if (response.data.message === "followed successfully") {
                 dispatch(removesuggestedUsers(userId)); 
+                toast.success(response.data.message);
 
                 
                 setTimeout(async () => {
@@ -38,7 +39,7 @@ const SuggestedUsers = () => {
                             dispatch(setSuggestedUsers(res.data.users));
                         }
                     } catch (error) {
-                        Toaster.log(error);
+                        toast.log(error);
                     }
                 }, 100); 
             }

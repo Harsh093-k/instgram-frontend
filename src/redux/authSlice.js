@@ -7,7 +7,7 @@ const authSlice = createSlice({
         suggestedUsers:[],
         userProfile:null,
         selectedUser:null,
-       followingUser:[],
+       followingUsers:[],
     },
     reducers:{
        
@@ -27,11 +27,9 @@ const authSlice = createSlice({
             state.suggestedUsers = state.suggestedUsers.filter(user => user.id !== action.payload);
         }, 
         setFollowingUser:(state,action) => {
-            state.followingUser = action.payload;
+            state.followingUsers = action.payload;
         },
-        removeFollowingUser:(state,action)=>{
-            state.suggestedUsers = state.suggestedUsers.filter(user => user.id !== action.payload);
-        }, 
+        
     }
 });
 export const {
@@ -40,7 +38,6 @@ export const {
     setUserProfile,
     setSelectedUser,
     removesuggestedUsers,
-    removeFollowingUser,
     setFollowingUser,
 } = authSlice.actions;
 export default authSlice.reducer;
