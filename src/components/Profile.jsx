@@ -10,18 +10,51 @@ import { AtSign, Heart, MessageCircle } from 'lucide-react';
 const Profile = () => {
   const params = useParams();
   const userId = params.id;
-  useGetUserProfile(userId);
+  useGetUserProfile(userId); 
+  const [isFollowing, setIsFollowing] = useState(false);
+
+useEffect(() => {
+  if (user && userProfile) {
+    setIsFollowing(user.following?.includes(userProfile._id));
+  }
+}, [user, userProfile]);
+
   const [activeTab, setActiveTab] = useState('posts');
 
   const { userProfile, user } = useSelector(store => store.auth);
 
   const isLoggedInUserProfile = user?._id === userProfile?._id;
-  const isFollowing = user?.following?.includes(userProfile?._id); 
+ 
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   }
 
+  const handleFollow = async () => {
+    try {
+     const res= await axios.post(`https://instagram-backend-my27.onrender.com/api/user/followorunfollow/${userProfile._id}`);
+      setIsFollowing(true);
+      if(res.data.success){
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      toast.error(res.data.message || "Some thing wrong !")
+      console.error("Error following user", error);
+    }
+  };
+  
+  const handleUnfollow = async () => {
+    try {
+      const res=await axios.post(`https://instagram-backend-my27.onrender.com/api/user/followorunfollow/${userProfile._id}`);
+      setIsFollowing(false);
+      if(res.data.success){
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      toast.error(res.data.message || "Some thing wrong !")
+      console.error("Error unfollowing user", error);
+    }
+  };
   const displayedPost = activeTab === 'posts'
     ? userProfile?.posts
     : activeTab === 'saved'
@@ -50,27 +83,30 @@ const Profile = () => {
 
       <section>
   <div className='flex flex-col gap-4'>
-
+  
   
     <div className='flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-2 items-center'>
       <div className='text-xl font-semibold items-center'>{userProfile?.username}</div>
       <div className='flex flex-wrap gap-2'>
-        {isLoggedInUserProfile ? (
-          <>
-            <Link to="/account/edit"><Button variant='secondary' className='h-8'>Edit profile</Button></Link>
-            <Button variant='secondary' className='h-8'>View archive</Button>
-            <Button variant='secondary' className='h-8'>Ad tools</Button>
-          </>
-        ) : (
-          isFollowing ? (
-            <>
-              <Button variant='secondary' className='h-8'>Unfollow</Button>
-              <Button variant='secondary' className='h-8'>Message</Button>
-            </>
-          ) : (
-            <Button className='bg-[#0095F6] hover:bg-[#3192d2] h-8'>Follow</Button>
-          )
-        )}
+      {isLoggedInUserProfile ? (
+  <>
+    <Link to="/account/edit">
+      <Button variant='secondary' className='h-8'>Edit profile</Button>
+    </Link>
+    <Button variant='secondary' className='h-8'>View archive</Button>
+    <Button variant='secondary' className='h-8'>Ad tools</Button>
+  </>
+) : (
+  isFollowing ? (
+    <>
+      <Button variant='secondary' className='h-8' onClick={handleUnfollow}>Unfollow</Button>
+      <Button variant='secondary' className='h-8'>Message</Button>
+    </>
+  ) : (
+    <Button className='bg-[#0095F6] hover:bg-[#3192d2] h-8' onClick={handleFollow}>Follow</Button>
+  )
+)}
+
       </div>
     </div>
 
