@@ -16,7 +16,7 @@ const Profile = () => {
   const { userProfile, user } = useSelector(store => store.auth);
 
   const isLoggedInUserProfile = user?._id === userProfile?._id;
-  const isFollowing = false;
+  const isFollowing = user?.following?.includes(userProfile?._id); 
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -36,10 +36,9 @@ const Profile = () => {
     <div className='flex flex-col max-w-5xl mx-auto px-4 sm:px-6 lg:px-8'>
   <div className='flex flex-col gap-10 py-8'>
     
-    {/* Profile Header */}
+   
     <div className='grid grid-cols-1 md:grid-cols-2 gap-6 items-center'>
-      {/* Profile Picture */}
-      <section className='flex justify-center md:justify-end'>
+         <section className='flex justify-center md:justify-end'>
         <div>
           {userProfile?.profilePicture ? (
             <img className='h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full object-cover' src={userProfile.profilePicture} alt="profile_picture" />
@@ -75,14 +74,14 @@ const Profile = () => {
       </div>
     </div>
 
-    {/* Followers / Following / Posts */}
+   
     <div className='flex gap-6 text-sm'>
       <p><span className='font-semibold'>{userProfile?.posts.length}</span> posts</p>
       <p><span className='font-semibold'>{userProfile?.followers.length}</span> followers</p>
       <p><span className='font-semibold'>{userProfile?.following.length}</span> following</p>
     </div>
 
-    {/* Bio and Tag */}
+   
     <div className='flex flex-col gap-1 text-sm'>
       <span className='font-semibold'>{userProfile?.bio || 'bio here...'}</span>
       <Badge className='w-fit' variant='secondary'>
