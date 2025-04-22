@@ -39,7 +39,7 @@ const Profile = () => {
 
   const handleFollow = async () => {
     try {
-   
+      const UserProfile=userProfile._id
       const response = await axios.post(
         `https://instagram-backend-my27.onrender.com/api/v1/user/followorunfollow/${UserProfile}`,
         {},
