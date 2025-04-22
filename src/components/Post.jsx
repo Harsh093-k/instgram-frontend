@@ -43,21 +43,21 @@ const Post = ({ post }) => {
                     withCredentials: true,
                 }
             );
-    
-      
+
+
             if (response.data.message === "Unfollowed successfully") {
                 toast.success("Unfollowed successfully");
             } else if (response.data.message === "Followed successfully") {
                 toast.success("Followed successfully");
             } else {
-                toast(response.data.message); 
+                toast(response.data.message);
             }
-    
+
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong!");
         }
     };
-    
+
     const likeOrDislikeHandler = async () => {
         try {
             const action = liked ? 'dislike' : 'like';
@@ -143,31 +143,54 @@ const Post = ({ post }) => {
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
                     <div>
-                        {post?.author.profilePicture ? (
-                            <img className='h-10 w-10 items-center rounded-full' src={post.author?.profilePicture} alt="profile_picture" />
+                        {post?.author?.profilePicture ? (
+                            <img
+                                className='h-10 w-10 items-center rounded-full'
+                                src={post.author.profilePicture}
+                                alt="profile_picture"
+                            />
                         ) : (
                             <FaUserCircle size={35} />
                         )}
 
                     </div>
                     <div className='flex items-center gap-3'>
-                        <h1>{post.author?.username}</h1>
-                        {user?._id === post.author._id && <Badge variant="secondary">Author</Badge>}
+                        <h1>{post?.author?.username || 'Unknown User'}</h1>
+                        {user?._id && post?.author?._id && user._id === post.author._id && (
+                            <Badge variant="secondary">Author</Badge>
+                        )}
                     </div>
+
                 </div>
                 <Dialog>
                     <DialogTrigger asChild>
                         <MoreHorizontal className='cursor-pointer' />
                     </DialogTrigger>
                     <DialogContent className="flex flex-col items-center text-sm text-center">
-                        {
-                            post?.author?._id !== user?._id && <Button variant='ghost' onClick={() => follow(user._id)}  className="cursor-pointer w-fit text-[#ED4956] font-bold" >Unfollow</Button>
-                        }
+                        {user && post?.author?._id && user._id !== post.author._id && (
+                            <Button
+                                variant='ghost'
+                                onClick={() => follow(user._id)}
+                                className="cursor-pointer w-fit text-[#ED4956] font-bold"
+                            >
+                                Unfollow
+                            </Button>
+                        )}
 
-                        <Button variant='ghost' className="cursor-pointer w-fit">Add to favorites</Button>
-                        {
-                            user && user?._id === post?.author._id && <Button onClick={deletePostHandler} variant='ghost' className="cursor-pointer w-fit">Delete</Button>
-                        }
+                        <Button variant='ghost' className="cursor-pointer w-fit">
+                            Add to favorites
+                        </Button>
+
+                        {user && post?.author?._id && user._id === post.author._id && (
+                            <Button
+                                onClick={deletePostHandler}
+                                variant='ghost'
+                                className="cursor-pointer w-fit"
+                            >
+                                Delete
+                            </Button>
+                        )}
+
                     </DialogContent>
                 </Dialog>
             </div>
