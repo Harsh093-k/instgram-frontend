@@ -262,7 +262,7 @@ import { useMediaQuery } from 'react-responsive';
 
 const ChatPage = () => {
     const [textMessage, setTextMessage] = useState("");
-    const { user, followingUser = [], selectedUser } = useSelector(store => store.auth);
+    const { user, followingUsers = [], selectedUser } = useSelector(store => store.auth);
     const { onlineUsers, messages } = useSelector(store => store.chat);
     const dispatch = useDispatch();
 
@@ -299,7 +299,7 @@ const ChatPage = () => {
             <div className='my-6 px-3'>
                 <h1 className='font-bold mb-4 text-xl'>{user?.username}</h1>
                 <hr className='mb-4 border-gray-300' />
-                {followingUser.map((suggestedUser) => {
+                {followingUsers.map((suggestedUser) => {
                     const isOnline = onlineUsers.includes(suggestedUser?._id);
                     return (
                         <div
