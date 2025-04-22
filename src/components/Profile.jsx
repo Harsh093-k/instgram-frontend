@@ -39,11 +39,24 @@ const Profile = () => {
 
   const handleFollow = async () => {
     try {
-     const res= await axios.post(`https://instagram-backend-my27.onrender.com/api/user/followorunfollow/${userProfile._id}`);
-      setIsFollowing(true);
-      if(res.data.success){
-        toast.success(res.data.message);
-      }
+   
+      const response = await axios.post(
+        `https://instagram-backend-my27.onrender.com/api/v1/user/followorunfollow/${UserProfile}`,
+        {},
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            withCredentials: true,
+        }
+    );
+  
+      if (response.data.message === "followed successfully") {
+        setIsFollowing(true);
+        toast.success(response.data.message);
+        navigator("/")
+        
+    }
     } catch (error) {
       toast.error(res.data.message || "Some thing wrong !")
       console.error("Error following user", error);
